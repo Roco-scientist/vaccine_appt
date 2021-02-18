@@ -257,7 +257,7 @@ def main():
     # your search and put the site here
     search_website = "https://www.maimmunizations.org/clinic/search?commit=Search&location=&q%5Bclinic_date_eq%5D=&q%5Bvaccinations_name_i_cont%5D=&q%5Bvenue_search_name_or_venue_name_i_cont%5D=fenway&search_radius=All#search_results#search_results"
     # How many seconds to wait if there are no appointments available until checking again
-    sec_pause_refresh = 300
+    sec_pause_refresh = 30
     # Whether or not to proceed on the last page.  False if you want to pick your own time,
     # otherwise it picks the first
     schedule = True
