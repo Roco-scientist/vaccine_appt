@@ -2,7 +2,7 @@
 ## Requirements
 
 <ul>
-<li>Selenium setup for firefox</li>
+<li>Selenium and geckdriver setup for firefox</li>
 <li>Python 3.6 or greater</li>
 <li>Pandas for python</li>
 <li>BS4 for python</li>
