@@ -239,7 +239,7 @@ def main():
     sec_pause_refresh = 300
     # Whether or not to proceed on the last page.  False if you want to pick your own time,
     # otherwise it picks the first
-    schedule = False
+    schedule = True
 
     # Creating a dictionary of user variables to put into the website
     user_info = {field: value for field, value in zip(data.Field, data.Value)}
