@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from time import sleep
 import re
 import random
-from time import sleep
 from datetime import datetime
 
 
