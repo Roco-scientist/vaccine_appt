@@ -22,16 +22,28 @@ class vaccine_site:
         self.driver = driver
         self.user_info = user_info
 
-    def page_start(self, sec_pause_refresh):
+    def page_start(self, sec_pause_refresh, search_website):
         # Get how many open appointments per day/site
         self.get_apt_num()
         # If there are none, refresh after ever sec_pause_refresh and check again
         while max(self.openings) == 0:
             now = datetime.now()
-            print(f"{now}: No openings found")
-            sleep(sec_pause_refresh)
-            self.driver.refresh()
-            self.get_apt_num()
+            next_page_button = ""
+            while max(self.openings) == 0 and next_page_button is not None:
+                html = self.driver.page_source
+                soup = BeautifulSoup(html, "html.parser")
+                next_page = soup.find(attrs={"class": "page next"})
+                next_page_button = self.driver.find_elements_by_class_name("next page")
+                if next_page_button is not None:
+                    next_page_button = self.driver.find_elements_by_class_name("next page")
+                    next_page_button.click()
+                    random_pause()
+                    self.get_apt_num()
+            if max(self.openings) == 0:
+                print(f"{now}: No openings found")
+                sleep(sec_pause_refresh)
+                self.driver.get(search_website)
+                self.get_apt_num()
         # Find the continue buttons for the sites
         buttons = self.driver.find_elements_by_class_name("button-primary.px-4")
         # Find the button with the maximum appointments
@@ -106,7 +118,7 @@ class vaccine_site:
 
     def page_three(self):
         # Fill in the user fields
-        for fill_field in ("patient_insurance_company_name", "patient_member_id_for_insurance",
+        for fill_field in ("patient_member_id_for_insurance",
                            "patient_insured_first_name", "patient_insured_last_name"):
             fill_value = self.user_info[fill_field]
             fill_web_loc = self.driver.find_element_by_id(fill_field)
@@ -118,6 +130,12 @@ class vaccine_site:
             select_value = self.user_info[select_field]
             select_web_loc = Select(self.driver.find_element_by_id(select_field))
             select_web_loc.select_by_visible_text(select_value)
+        select_web_loc =\
+            Select(self.driver.find_element_by_id("select2-patient_insurance_company_name-container"))
+        select_web_loc.select_by_visible_text("OTHER (PLEASE SPECIFY):")
+        fill_value = self.user_info["patient_insurance_company_name"]
+        insurance_field = driver.find_element_by_id("patient_other_insurance")
+        insurance_field.send_keys(fill_value)
         # Pause and continue
         save_and_continue = self.driver.find_element_by_id("submitButton")
         save_and_continue.click()
@@ -255,7 +273,7 @@ def main():
     # Setup the class
     vaccine_page = vaccine_site(driver, user_info)
     # Navigate page one and find all open appointments and select the day with the most
-    vaccine_page.page_start(sec_pause_refresh)
+    vaccine_page.page_start(sec_pause_refresh, search_website)
     # Navigate the next page which has priority list
     vaccine_page.page_one()
     # If the appt was taken before continuing to next page, go back to the start page
