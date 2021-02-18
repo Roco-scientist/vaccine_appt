@@ -6,7 +6,19 @@ from bs4 import BeautifulSoup
 from time import sleep
 import re
 import random
+import argparse
 from datetime import datetime
+
+
+def arguments():
+    parser = argparse.ArgumentParser(
+        description="Pings maimmunizations for vaccine opeings and fills in parameters")
+    parser.add_argument("--test", action="store_true", default=False, help="Test mode")
+    parser.add_argument("--refresh_secs", default=30,
+                        help="Seconds to pause before refreshing if there are no appointments")
+    parser.add_argument("--schedule", action="store_true", default=False,
+                        help="Schedule on the last page instead of manually select appointment")
+    return parser.parse_args()
 
 
 def random_pause():
@@ -251,17 +263,21 @@ class vaccine_site:
 
 
 def main():
+    args = arguments()
     # user data input
     data = read_csv("./vaccine_info.csv")
+    # Whether or not to proceed on the last page.  False if you want to pick your own time,
+    # otherwise it picks the first
+    schedule = args.schedule
     # website for the search.  This is replaceable with any search from maimmunizations, just do
     # your search and put the site here
     search_website = "https://www.maimmunizations.org/clinic/search?commit=Search&location=&q%5Bclinic_date_eq%5D=&q%5Bvaccinations_name_i_cont%5D=&q%5Bvenue_search_name_or_venue_name_i_cont%5D=fenway&search_radius=All#search_results#search_results"
     # How many seconds to wait if there are no appointments available until checking again
-    sec_pause_refresh = 30
-    # Whether or not to proceed on the last page.  False if you want to pick your own time,
-    # otherwise it picks the first
-    schedule = True
+    sec_pause_refresh = args.refresh_secs
 
+    if args.test:
+        # DO NOT CHANGE THESE
+        data = read_csv("../vaccine_info.csv")
     # Creating a dictionary of user variables to put into the website
     user_info = {field: value for field, value in zip(data.Field, data.Value)}
     # Email is needed twice on one page.  Setting that here
