@@ -1,5 +1,5 @@
 Field,Value,Key,Choices
-Priority_Group,,Integer,"1: Covid Facing, 2: Long term resident, 3: first responder, 4: other congregate, 5: home based healthcare, 6: non covid healthcare, 7: 65+, 8: 2+ medical conditions, 9: low income residents, 9: 75+ accompanying, 10: None already got the first"
+Priority_Group,,Integer,"1: Covid Facing, 2: Long term resident, 3: first responder, 4: other congregate, 5: home based healthcare, 6: non covid healthcare, 7: 65+, 8: 2+ medical conditions, 9: low income residents, 10: 75+ accompanying, 11: None already got the first"
 patient_first_name,,First name,
 patient_middle_initial,,Middle initial,
 patient_last_name,,Last Name,

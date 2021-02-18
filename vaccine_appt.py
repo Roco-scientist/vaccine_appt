@@ -28,14 +28,14 @@ class vaccine_site:
         # If there are none, refresh after ever sec_pause_refresh and check again
         while max(self.openings) == 0:
             now = datetime.now()
-            next_page_button = ""
-            while max(self.openings) == 0 and next_page_button is not None:
+            next_page = ""
+            while max(self.openings) == 0 and next_page is not None:
                 html = self.driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
                 next_page = soup.find(attrs={"class": "page next"})
-                next_page_button = self.driver.find_elements_by_class_name("next page")
-                if next_page_button is not None:
-                    next_page_button = self.driver.find_elements_by_class_name("next page")
+                breakpoint()
+                if next_page is not None:
+                    next_page_button = self.driver.find_element_by_class_name("next.page")
                     next_page_button.click()
                     random_pause()
                     self.get_apt_num()
@@ -130,9 +130,13 @@ class vaccine_site:
             select_value = self.user_info[select_field]
             select_web_loc = Select(self.driver.find_element_by_id(select_field))
             select_web_loc.select_by_visible_text(select_value)
-        select_web_loc =\
-            Select(self.driver.find_element_by_id("select2-patient_insurance_company_name-container"))
-        select_web_loc.select_by_visible_text("OTHER (PLEASE SPECIFY):")
+        insurance_select =\
+            self.driver.find_element_by_id("select2-patient_insurance_company_name-container")
+        insurance_select.click()
+        other_select =\
+            self.driver.find_element_by_id(
+                "select2-patient_insurance_company_name-container-result-6sc3-OTHER.(PLEASE.SPECIFY):")
+        other_select.click()
         fill_value = self.user_info["patient_insurance_company_name"]
         insurance_field = driver.find_element_by_id("patient_other_insurance")
         insurance_field.send_keys(fill_value)
