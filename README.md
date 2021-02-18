@@ -19,8 +19,9 @@ Within the main function<br>
 `data = read_csv(<vaccine_info.csv location>)`<br>
 `search_website` This is the website it is currently setup for.  Should work with all maimmunization
 searchs.  Just replace your search website within this variable.<br>
-`sec_pause_refresh` If there are no available slots, how many seconds to wait until checking again<br>
-`schedule` Boolean for whether or not to finish the scheduling on the last page. Right now it selects the first available appointment but can be set to `False` in order to stop on this page and allow the use to select
 
 ## Run
-`$ python vaccine_appt.py`
+To have it stop at the last page and have you manually selet the appointment<br>
+`$ python vaccine_appt.py`<br>
+To have the program select the earliest available appointment so that you don't miss your chance<br>
+`$ python vaccine_appt.py --schedule`
