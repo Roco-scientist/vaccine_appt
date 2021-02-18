@@ -21,3 +21,6 @@ Within the main function<br>
 searchs.  Just replace your search website within this variable.<br>
 `sec_pause_refresh` If there are no available slots, how many seconds to wait until checking again<br>
 `schedule` Boolean for whether or not to finish the scheduling on the last page. Right now it selects the first available appointment but can be set to `False` in order to stop on this page and allow the use to select
+
+## Run
+`$ python vaccine_appt.py`
