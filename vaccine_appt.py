@@ -30,7 +30,7 @@ class vaccine_site:
             now = datetime.now()
             print(f"{now}: No openings found")
             sleep(sec_pause_refresh)
-            self.driver.navigate().refresh()
+            self.driver.refresh()
             self.get_apt_num()
         # Find the continue buttons for the sites
         buttons = self.driver.find_elements_by_class_name("button-primary.px-4")
