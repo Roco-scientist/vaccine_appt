@@ -144,9 +144,18 @@ class vaccine_site:
         insurance_select =\
             self.driver.find_element_by_id("select2-patient_insurance_company_name-container")
         insurance_select.click()
+        html = self.driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
+        inputs = soup.findAll("li")
+        for input_field in inputs:
+            try:
+                input_field["id"]
+                if "OTHER (PLEASE SPECIFY)" in input_field["id"]:
+                    click_field_final = input_field["id"]
+            except KeyError:
+                pass
         other_select =\
-            self.driver.find_element_by_id(
-                "select2-patient_insurance_company_name-container-result-6sc3-OTHER.(PLEASE.SPECIFY):")
+            self.driver.find_element_by_id(click_field_final)
         other_select.click()
         fill_value = self.user_info["patient_insurance_company_name"]
         insurance_field = driver.find_element_by_id("patient_other_insurance")
