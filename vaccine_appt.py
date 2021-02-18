@@ -33,7 +33,6 @@ class vaccine_site:
                 html = self.driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
                 next_page = soup.find(attrs={"class": "page next"})
-                breakpoint()
                 if next_page is not None:
                     next_page_button = self.driver.find_element_by_class_name("next.page")
                     next_page_button.click()
