@@ -11,7 +11,7 @@
 <br><br>
 
 ## Setup
-Fill in csv file.  It is case and word sensitive.  The priority group will need to be found in the dropdown menu and filled in exactly how it occurs on the website.  Also your exact insurance company will need to be put in here.  It may not matter as they may ask for your insurance ID later anyways.
+Fill in csv file.  It is case and word sensitive.  Some values have the choices listed in the choice column of the csv.  The priority group will need to be found in the dropdown menu and filled in exactly how it occurs on the website.  Also your exact insurance company will need to be put in here.  It may not matter as they may ask for your insurance ID later anyways.
 <br><br>
 
 ## Variables to change
