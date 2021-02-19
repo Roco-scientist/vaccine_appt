@@ -14,7 +14,7 @@ def arguments():
     parser = argparse.ArgumentParser(
         description="Pings maimmunizations for vaccine opeings and fills in parameters")
     parser.add_argument("--test", action="store_true", default=False, help="Test mode")
-    parser.add_argument("--refresh_secs", default=30,
+    parser.add_argument("--refresh_secs", default=30, type=int,
                         help="Seconds to pause before refreshing if there are no appointments")
     parser.add_argument("--schedule", action="store_true", default=False,
                         help="Schedule on the last page instead of manually select appointment")
