@@ -42,15 +42,18 @@ class vaccine_site:
         while max(self.openings) == 0:
             now = datetime.now()
             next_page = ""
+            # Iterate through the pages to find openings
             while max(self.openings) == 0 and next_page is not None:
                 html = self.driver.page_source
                 soup = BeautifulSoup(html, "html.parser")
                 next_page = soup.find(attrs={"class": "page next"})
+                # Go to next page if there is one
                 if next_page is not None:
                     next_page_button = self.driver.find_element_by_class_name("next.page")
                     next_page_button.click()
                     random_pause()
                     self.get_apt_num()
+            # Restart at the start page after the pause if there are no openings
             if max(self.openings) == 0:
                 print(f"{now}: No openings found")
                 sleep(sec_pause_refresh)
@@ -75,12 +78,12 @@ class vaccine_site:
         soup = BeautifulSoup(html, "html.parser")
         # apt_days = soup.findAll("div", attrs={"class": "field-fullwidth"})
         apt_days = soup.findAll("div", attrs={"class": "md:flex-shrink text-gray-800"})
+        # If the webpage fails to load, relaod and find openings
         while len(apt_days) == 0:
             sleep(2)
             self.driver.get(self.search_website)
             html = self.driver.page_source
             soup = BeautifulSoup(html, "html.parser")
-            # apt_days = soup.findAll("div", attrs={"class": "field-fullwidth"})
             apt_days = soup.findAll("div", attrs={"class": "md:flex-shrink text-gray-800"})
             print("Web page fault.  May need to restart.")
         # Start a new list for appointments
@@ -150,9 +153,14 @@ class vaccine_site:
             select_value = self.user_info[select_field]
             select_web_loc = Select(self.driver.find_element_by_id(select_field))
             select_web_loc.select_by_visible_text(select_value)
+        # Fix below for insurance entering
         insurance_select =\
             self.driver.find_element_by_id("select2-patient_insurance_company_name-container")
+        # click the insurance field
         insurance_select.click()
+        # Scrape the page to find where th OTHER (SPECIFY PLEASE) is found
+        # This is used to be able to enter hte insurance company without worrying about case
+        # matching
         html = self.driver.page_source
         soup = BeautifulSoup(html, "html.parser")
         inputs = soup.findAll("li")
@@ -163,9 +171,11 @@ class vaccine_site:
                     click_field_final = input_field["id"]
             except KeyError:
                 pass
+        # Select the OTHER field and click it
         other_select =\
             self.driver.find_element_by_id(click_field_final)
         other_select.click()
+        # Fill the insurance field
         fill_value = self.user_info["patient_insurance_company_name"]
         insurance_field = self.driver.find_element_by_id("patient_other_insurance")
         insurance_field.send_keys(fill_value)
