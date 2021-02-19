@@ -158,7 +158,7 @@ class vaccine_site:
             self.driver.find_element_by_id(click_field_final)
         other_select.click()
         fill_value = self.user_info["patient_insurance_company_name"]
-        insurance_field = driver.find_element_by_id("patient_other_insurance")
+        insurance_field = self.driver.find_element_by_id("patient_other_insurance")
         insurance_field.send_keys(fill_value)
         # Pause and continue
         save_and_continue = self.driver.find_element_by_id("submitButton")
