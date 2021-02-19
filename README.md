@@ -24,4 +24,6 @@ searchs.  Just replace your search website within this variable.<br>
 To have it stop at the last page and have you manually select the appointment<br>
 `$ python vaccine_appt.py`<br>
 To have the program select the earliest available appointment so that you don't miss your chance<br>
-`$ python vaccine_appt.py --schedule`
+`$ python vaccine_appt.py --schedule`<br>
+To search gillette instead of fenway<br>
+`$ python vaccine_appt.py --gillette`<br>
