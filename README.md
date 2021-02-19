@@ -1,4 +1,6 @@
 # vaccine_appt
+Last tested on 2021-02-19
+
 ## Requirements
 
 <ul>
