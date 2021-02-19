@@ -38,5 +38,5 @@ patient_patient_question_answers_attributes_2_additional_info,,Additional info f
 16,,Was the severe allergic reaction after receiving a COVID-19 vaccine? ,yes/no
 17,,Was the severe allergic reaction after receiving another vaccine or another injectable medication?,yes/no
 covid_vaccine_number,,,first/second
-first_vaccine_brand,,,pfizer/moderna
-patient_patient_question_answers_attributes_1_additional_info,,,Pfizer/Moderna
+first_vaccine_brand,,,pfizer/moderna leave blank if it is your first
+patient_patient_question_answers_attributes_1_additional_info,,,pfizer/moderna leave blank if it is your first
