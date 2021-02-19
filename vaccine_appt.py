@@ -150,7 +150,7 @@ class vaccine_site:
         for input_field in inputs:
             try:
                 input_field["id"]
-                if "OTHER (PLEASE SPECIFY)" in input_field["id"]:
+                if "PLEASE" in input_field["id"] and "SPECIFY" in input_field["id"] and "OTHER" in input_field["id"]:
                     click_field_final = input_field["id"]
             except KeyError:
                 pass
