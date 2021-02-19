@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from pandas import read_csv
 from bs4 import BeautifulSoup
@@ -18,6 +20,8 @@ def arguments():
                         help="Seconds to pause before refreshing if there are no appointments")
     parser.add_argument("--schedule", action="store_true", default=False,
                         help="Schedule on the last page instead of manually select appointment")
+    parser.add_argument("--gillette", action="store_true", default=False,
+                        help="Search gillette instead of fenway")
     return parser.parse_args()
 
 
@@ -33,6 +37,7 @@ class vaccine_site:
     def __init__(self, driver, user_info):
         self.driver = driver
         self.user_info = user_info
+        self.delay = 2
 
     def page_start(self, sec_pause_refresh, search_website):
         self.search_website = search_website
@@ -58,6 +63,7 @@ class vaccine_site:
                 print(f"{now}: No openings found")
                 sleep(sec_pause_refresh)
                 self.driver.get(search_website)
+                self.driver.refresh()
                 self.get_apt_num()
         # Find the continue buttons for the sites
         buttons = self.driver.find_elements_by_class_name("button-primary.px-4")
@@ -103,6 +109,8 @@ class vaccine_site:
         self.continue_next = False
         if "Clinic+does+not+have+any+appointment+slots+available" not in self.driver.current_url:
             self.continue_next = True
+            myElem = WebDriverWait(self.driver, self.delay)\
+                .until(EC.presence_of_element_located((By.CLASS_NAME, 'form-select.w-full')))
             # Find the priority group select box
             select = Select(self.driver.find_element_by_class_name("form-select.w-full"))
             # Select the priority group
@@ -119,6 +127,8 @@ class vaccine_site:
             random_pause()
 
     def page_two(self):
+        myElem = WebDriverWait(self.driver, self.delay)\
+            .until(EC.presence_of_element_located((By.ID, 'patient_first_name')))
         # Fill in the following fields with the provided user info
         for fill_field in ("patient_first_name", "patient_middle_initial", "patient_last_name",
                            "patient_email", "patient_email_confirmation", "patient_phone_number",
@@ -140,6 +150,8 @@ class vaccine_site:
         random_pause()
 
     def page_three(self):
+        myElem = WebDriverWait(self.driver, self.delay)\
+            .until(EC.presence_of_element_located((By.ID, 'patient_member_id_for_insurance')))
         # Fill in the user fields
         for fill_field in ("patient_member_id_for_insurance",
                            "patient_insured_first_name", "patient_insured_last_name"):
@@ -188,6 +200,8 @@ class vaccine_site:
         """
         If this is the second vaccine, fill in the first vaccine fields
         """
+        myElem = WebDriverWait(self.driver, self.delay)\
+            .until(EC.presence_of_element_located((By.ID, 'first_vaccine_brand')))
         for click_field in ("first_vaccine_brand"):
             click_value = self.user_info[click_field]
             click_field_final = f"{click_field}_{click_value}"
@@ -202,6 +216,8 @@ class vaccine_site:
         """
         Answer the questions
         """
+        myElem = WebDriverWait(self.driver, self.delay)\
+            .until(EC.presence_of_element_located((By.ID, '7_no')))
         # Click yes or no on all of the questions
         for click_field in ("7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
                             "17", "covid_vaccine_number"):
@@ -241,6 +257,8 @@ class vaccine_site:
         """
         Select the vaccine
         """
+        myElem = WebDriverWait(self.driver, self.delay)\
+            .until(EC.presence_of_element_located((By.CLASS_NAME, 'text-lg')))
         html = self.driver.page_source
         soup = BeautifulSoup(html, "html.parser")
         vaccines = soup.findAll("label", {"class": "text-lg"})
@@ -282,6 +300,8 @@ class vaccine_site:
         random_pause()
 
     def page_seven(self):
+        myElem = WebDriverWait(self.driver, self.delay)\
+            .until(EC.presence_of_element_located((By.CLASS_NAME, 'form-radio.appointment-radio-btn')))
         openings_buttons = self.driver.find_elements_by_class_name(
             "form-radio.appointment-radio-btn")
         # Finds the first opening and clicks on it
@@ -300,6 +320,8 @@ def main():
     # website for the search.  This is replaceable with any search from maimmunizations, just do
     # your search and put the site here
     search_website = "https://www.maimmunizations.org/clinic/search?commit=Search&location=&q%5Bclinic_date_eq%5D=&q%5Bvaccinations_name_i_cont%5D=&q%5Bvenue_search_name_or_venue_name_i_cont%5D=fenway&search_radius=All#search_results#search_results"
+    if args.gillette:
+        search_website = "https://www.maimmunizations.org/clinic/search?location=&search_radius=All&q%5Bvenue_search_name_or_venue_name_i_cont%5D=gillette&q%5Bclinic_date_gteq%5D=&q%5Bvaccinations_name_i_cont%5D=&commit=Search#search_results"
     # How many seconds to wait if there are no appointments available until checking again
     sec_pause_refresh = args.refresh_secs
 
