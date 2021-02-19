@@ -35,6 +35,7 @@ class vaccine_site:
         self.user_info = user_info
 
     def page_start(self, sec_pause_refresh, search_website):
+        self.search_website = search_website
         # Get how many open appointments per day/site
         self.get_apt_num()
         # If there are none, refresh after ever sec_pause_refresh and check again
@@ -74,6 +75,14 @@ class vaccine_site:
         soup = BeautifulSoup(html, "html.parser")
         # apt_days = soup.findAll("div", attrs={"class": "field-fullwidth"})
         apt_days = soup.findAll("div", attrs={"class": "md:flex-shrink text-gray-800"})
+        while len(apt_days) == 0:
+            sleep(2)
+            self.driver.get(self.search_website)
+            html = self.driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            # apt_days = soup.findAll("div", attrs={"class": "field-fullwidth"})
+            apt_days = soup.findAll("div", attrs={"class": "md:flex-shrink text-gray-800"})
+            print("Web page fault.  May need to restart.")
         # Start a new list for appointments
         self.openings = []
         for apt in apt_days:
