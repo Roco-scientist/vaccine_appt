@@ -203,7 +203,7 @@ class vaccine_site:
                 checkbox = self.driver.find_element_by_id(click_field_final)
                 checkbox.click()
                 if click_value == "second":
-                    additional_first_vax_info(self.driver, self.user_info)
+                    self.additional_first_vax_info()
             else:
                 checkbox = self.driver.find_element_by_id(click_field_final)
                 checkbox.click()
