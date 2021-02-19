@@ -1,5 +1,6 @@
 # vaccine_appt
-Last tested on 2021-02-19
+Last tested on 2021-02-19<br>
+Script that pings maimmunizations every 30 seconds to check for an vaccine opening.  It then fills in all of your info on the next 7 pages.  Takes a few seconds to find an opening, fill in your information, and schedule your appointment
 
 ## Requirements
 
@@ -24,8 +25,10 @@ searchs.  Just replace your search website within this variable.<br>
 
 ## Run
 To have it stop at the last page and have you manually select the appointment<br>
-`$ python vaccine_appt.py`<br>
-To have the program select the earliest available appointment so that you don't miss your chance<br>
-`$ python vaccine_appt.py --schedule`<br>
-To search gillette instead of fenway<br>
-`$ python vaccine_appt.py --gillette`<br>
+`$ python vaccine_appt.py`<br><br>
+To have the program select the earliest available appointment so that you don't miss your chance.  Otherwise it stops on the last page so you can selecct the appointment time<br>
+`$ python vaccine_appt.py --schedule`<br><br>
+To search gillette instead of fenway.  The default is fenway.  `search_website` within main can also be changed to any maimmunizations search needed<br>
+`$ python vaccine_appt.py --gillette`<br><br>
+To check the website every 10 seconds instead of 30.  The default is 30<br>
+`$ python vaccine_appt.py --refresh_secs 10`<br><br>
