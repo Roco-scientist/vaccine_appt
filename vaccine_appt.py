@@ -88,6 +88,7 @@ class vaccine_site:
         while len(apt_days) == 0:
             sleep(2)
             self.driver.get(self.search_website)
+            self.driver.refresh()
             html = self.driver.page_source
             soup = BeautifulSoup(html, "html.parser")
             apt_days = soup.findAll("div", attrs={"class": "md:flex-shrink text-gray-800"})
@@ -348,6 +349,7 @@ def main():
     # If the appt was taken before continuing to next page, go back to the start page
     while not vaccine_page.continue_next:
         vaccine_page.driver.get(search_website)
+        vaccine_page.driver.refresh()
         vaccine_page.page_start(sec_pause_refresh)
         vaccine_page.page_one()
     # Fill in page 2
