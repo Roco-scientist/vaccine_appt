@@ -7,13 +7,26 @@ Script that pings maimmunizations every 30 seconds to check for an vaccine openi
 <ul>
 <li>Selenium and geckodriver setup for firefox</li>
 <li>Python 3.6 or greater</li>
-<li>Pandas for python</li>
-<li>BS4 for python</li>
-<li>Selenium for python</li>
+<li>virtualenv install for regular python if not using Anaconda</li>
 </ul>
 <br><br>
 
 ## Setup
+### Create a virtualenvironment and install dependencies:<br>
+for regular python<br>
+```
+$ python3 -m venv vaccine
+$ source vaccine/bin/acivate
+$ pip install -r requirements.txt --user
+```
+<br>
+for anaconda<br>
+```
+$ conda create --name vaccine python=3.6
+$ conda activate vaccine
+$ conda install --file requirements.txt
+```
+<br><br>
 Fill in csv file.  It is case and word sensitive.  Some values have the choices listed in the choice column of the csv.
 <br><br>
 
