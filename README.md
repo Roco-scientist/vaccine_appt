@@ -21,6 +21,7 @@ $ pip install -r requirements.txt --user
 ```
 <br>
 for anaconda<br>
+
 ```
 $ conda create --name vaccine python=3.6
 $ conda activate vaccine
