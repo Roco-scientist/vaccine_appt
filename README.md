@@ -28,7 +28,8 @@ $ conda activate vaccine
 $ conda install --file requirements.txt
 ```
 <br><br>
-Fill in csv file.  It is case and word sensitive.  Some values have the choices listed in the choice column of the csv.
+### Fill in the csv file:<br>  
+It is case and word sensitive.  Some values have the choices listed in the choice column of the csv.
 <br><br>
 
 ## Variables that are possible to change
