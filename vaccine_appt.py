@@ -38,9 +38,13 @@ class vaccine_site:
         self.driver = driver
         self.user_info = user_info
         self.delay = 2
+        self.appt_taken = True
 
     def page_start(self, sec_pause_refresh, search_website):
+        self.appt_taken = False
         self.search_website = search_website
+        # Open the webpage
+        self.driver.get(self.search_website)
         # Get how many open appointments per day/site
         self.get_apt_num()
         # If there are none, refresh after ever sec_pause_refresh and check again
@@ -107,9 +111,9 @@ class vaccine_site:
 
     def page_one(self):
         # only continue if it does not put you on an already taken page
-        self.continue_next = False
-        if "Clinic+does+not+have+any+appointment+slots+available" not in self.driver.current_url:
-            self.continue_next = True
+        if "Clinic+does+not+have+any+appointment+slots+available" in self.driver.current_url:
+            self.appt_taken = True
+        else:
             myElem = WebDriverWait(self.driver, self.delay)\
                 .until(EC.presence_of_element_located((By.CLASS_NAME, 'form-select.w-full')))
             # Find the priority group select box
@@ -128,74 +132,80 @@ class vaccine_site:
             random_pause()
 
     def page_two(self):
-        myElem = WebDriverWait(self.driver, self.delay)\
-            .until(EC.presence_of_element_located((By.ID, 'patient_first_name')))
-        # Fill in the following fields with the provided user info
-        for fill_field in ("patient_first_name", "patient_middle_initial", "patient_last_name",
-                           "patient_email", "patient_email_confirmation", "patient_phone_number",
-                           "patient_address", "locality", "postal_code"):
-            fill_value = self.user_info[fill_field]
-            fill_web_loc = self.driver.find_element_by_id(fill_field)
-            fill_web_loc.send_keys(fill_value)
-        # Select the folowing fields with the user info
-        for select_field in ("patient_race", "patient_ethnicity", "patient_date_of_birth_1i",
-                             "patient_date_of_birth_2i", "patient_date_of_birth_3i", "patient_sex",
-                             "patient_phone_number_type", "administrative_area_level_1"):
-            select_value = self.user_info[select_field]
-            select_web_loc = Select(self.driver.find_element_by_id(select_field))
-            select_web_loc.select_by_visible_text(select_value)
-        # Puase and continue
-        save_and_continue =\
-            self.driver.find_element_by_id("submitButton")
-        save_and_continue.click()
-        random_pause()
+        if "Clinic+does+not+have+any+appointment+slots+available" in self.driver.current_url:
+            self.appt_taken = True
+        else:
+            myElem = WebDriverWait(self.driver, self.delay)\
+                .until(EC.presence_of_element_located((By.ID, 'patient_first_name')))
+            # Fill in the following fields with the provided user info
+            for fill_field in ("patient_first_name", "patient_middle_initial", "patient_last_name",
+                               "patient_email", "patient_email_confirmation", "patient_phone_number",
+                               "patient_address", "locality", "postal_code"):
+                fill_value = self.user_info[fill_field]
+                fill_web_loc = self.driver.find_element_by_id(fill_field)
+                fill_web_loc.send_keys(fill_value)
+            # Select the folowing fields with the user info
+            for select_field in ("patient_race", "patient_ethnicity", "patient_date_of_birth_1i",
+                                 "patient_date_of_birth_2i", "patient_date_of_birth_3i", "patient_sex",
+                                 "patient_phone_number_type", "administrative_area_level_1"):
+                select_value = self.user_info[select_field]
+                select_web_loc = Select(self.driver.find_element_by_id(select_field))
+                select_web_loc.select_by_visible_text(select_value)
+            # Puase and continue
+            save_and_continue =\
+                self.driver.find_element_by_id("submitButton")
+            save_and_continue.click()
+            random_pause()
 
     def page_three(self):
-        myElem = WebDriverWait(self.driver, self.delay)\
-            .until(EC.presence_of_element_located((By.ID, 'patient_member_id_for_insurance')))
-        # Fill in the user fields
-        for fill_field in ("patient_member_id_for_insurance",
-                           "patient_insured_first_name", "patient_insured_last_name"):
-            fill_value = self.user_info[fill_field]
-            fill_web_loc = self.driver.find_element_by_id(fill_field)
-            fill_web_loc.send_keys(fill_value)
-        # Select the user fields
-        for select_field in ("patient_insurance_type", "patient_insured_date_of_birth_1i",
-                             "patient_insured_date_of_birth_2i",  "patient_insured_date_of_birth_3i",
-                             "patient_relation_to_patient_for_consent"):
-            select_value = self.user_info[select_field]
-            select_web_loc = Select(self.driver.find_element_by_id(select_field))
-            select_web_loc.select_by_visible_text(select_value)
-        # Fix below for insurance entering
-        insurance_select =\
-            self.driver.find_element_by_id("select2-patient_insurance_company_name-container")
-        # click the insurance field
-        insurance_select.click()
-        # Scrape the page to find where th OTHER (SPECIFY PLEASE) is found
-        # This is used to be able to enter hte insurance company without worrying about case
-        # matching
-        html = self.driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        inputs = soup.findAll("li")
-        for input_field in inputs:
-            try:
-                input_field["id"]
-                if "PLEASE" in input_field["id"] and "SPECIFY" in input_field["id"] and "OTHER" in input_field["id"]:
-                    click_field_final = input_field["id"]
-            except KeyError:
-                pass
-        # Select the OTHER field and click it
-        other_select =\
-            self.driver.find_element_by_id(click_field_final)
-        other_select.click()
-        # Fill the insurance field
-        fill_value = self.user_info["patient_insurance_company_name"]
-        insurance_field = self.driver.find_element_by_id("patient_other_insurance")
-        insurance_field.send_keys(fill_value)
-        # Pause and continue
-        save_and_continue = self.driver.find_element_by_id("submitButton")
-        save_and_continue.click()
-        random_pause()
+        if "Clinic+does+not+have+any+appointment+slots+available" in self.driver.current_url:
+            self.appt_taken = True
+        else:
+            myElem = WebDriverWait(self.driver, self.delay)\
+                .until(EC.presence_of_element_located((By.ID, 'patient_member_id_for_insurance')))
+            # Fill in the user fields
+            for fill_field in ("patient_member_id_for_insurance",
+                               "patient_insured_first_name", "patient_insured_last_name"):
+                fill_value = self.user_info[fill_field]
+                fill_web_loc = self.driver.find_element_by_id(fill_field)
+                fill_web_loc.send_keys(fill_value)
+            # Select the user fields
+            for select_field in ("patient_insurance_type", "patient_insured_date_of_birth_1i",
+                                 "patient_insured_date_of_birth_2i",  "patient_insured_date_of_birth_3i",
+                                 "patient_relation_to_patient_for_consent"):
+                select_value = self.user_info[select_field]
+                select_web_loc = Select(self.driver.find_element_by_id(select_field))
+                select_web_loc.select_by_visible_text(select_value)
+            # Fix below for insurance entering
+            insurance_select =\
+                self.driver.find_element_by_id("select2-patient_insurance_company_name-container")
+            # click the insurance field
+            insurance_select.click()
+            # Scrape the page to find where th OTHER (SPECIFY PLEASE) is found
+            # This is used to be able to enter hte insurance company without worrying about case
+            # matching
+            html = self.driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            inputs = soup.findAll("li")
+            for input_field in inputs:
+                try:
+                    input_field["id"]
+                    if "PLEASE" in input_field["id"] and "SPECIFY" in input_field["id"] and "OTHER" in input_field["id"]:
+                        click_field_final = input_field["id"]
+                except KeyError:
+                    pass
+            # Select the OTHER field and click it
+            other_select =\
+                self.driver.find_element_by_id(click_field_final)
+            other_select.click()
+            # Fill the insurance field
+            fill_value = self.user_info["patient_insurance_company_name"]
+            insurance_field = self.driver.find_element_by_id("patient_other_insurance")
+            insurance_field.send_keys(fill_value)
+            # Pause and continue
+            save_and_continue = self.driver.find_element_by_id("submitButton")
+            save_and_continue.click()
+            random_pause()
 
     def additional_first_vax_info(self):
         """
@@ -217,88 +227,94 @@ class vaccine_site:
         """
         Answer the questions
         """
-        myElem = WebDriverWait(self.driver, self.delay)\
-            .until(EC.presence_of_element_located((By.ID, '7_no')))
-        # Click yes or no on all of the questions
-        for click_field in ("7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
-                            "17", "covid_vaccine_number"):
-            click_value = self.user_info[click_field]
-            click_field_final = f"{click_field}_{click_value}"
-            if click_field == "covid_vaccine_number":
-                click_field_start = f"{click_field_final}_time"
-                html = self.driver.page_source
-                soup = BeautifulSoup(html, "html.parser")
-                inputs = soup.findAll("input")
-                for input_field in inputs:
-                    try:
-                        input_field["id"]
-                        if click_field_start in input_field["id"]:
-                            click_field_final = input_field["id"]
-                    except KeyError:
-                        pass
-                checkbox = self.driver.find_element_by_id(click_field_final)
-                checkbox.click()
-                if click_value == "second":
-                    self.additional_first_vax_info()
-            else:
-                checkbox = self.driver.find_element_by_id(click_field_final)
-                checkbox.click()
-        # Fill in field if 9 is a yes
-        if self.user_info["9"] == "yes":
-            fill_field = "patient_patient_question_answers_attributes_2_additional_info"
-            fill_value = self.user_info[fill_field]
-            fill_web_loc = self.driver.find_element_by_id(fill_field)
-            fill_web_loc.send_keys(fill_value)
-        # Pause and continue
-        save_and_continue = self.driver.find_element_by_id("skip_add_family")
-        save_and_continue.click()
-        random_pause()
+        if "Clinic+does+not+have+any+appointment+slots+available" in self.driver.current_url:
+            self.appt_taken = True
+        else:
+            myElem = WebDriverWait(self.driver, self.delay)\
+                .until(EC.presence_of_element_located((By.ID, '7_no')))
+            # Click yes or no on all of the questions
+            for click_field in ("7", "8", "9", "10", "11", "12", "13", "14", "15", "16",
+                                "17", "covid_vaccine_number"):
+                click_value = self.user_info[click_field]
+                click_field_final = f"{click_field}_{click_value}"
+                if click_field == "covid_vaccine_number":
+                    click_field_start = f"{click_field_final}_time"
+                    html = self.driver.page_source
+                    soup = BeautifulSoup(html, "html.parser")
+                    inputs = soup.findAll("input")
+                    for input_field in inputs:
+                        try:
+                            input_field["id"]
+                            if click_field_start in input_field["id"]:
+                                click_field_final = input_field["id"]
+                        except KeyError:
+                            pass
+                    checkbox = self.driver.find_element_by_id(click_field_final)
+                    checkbox.click()
+                    if click_value == "second":
+                        self.additional_first_vax_info()
+                else:
+                    checkbox = self.driver.find_element_by_id(click_field_final)
+                    checkbox.click()
+            # Fill in field if 9 is a yes
+            if self.user_info["9"] == "yes":
+                fill_field = "patient_patient_question_answers_attributes_2_additional_info"
+                fill_value = self.user_info[fill_field]
+                fill_web_loc = self.driver.find_element_by_id(fill_field)
+                fill_web_loc.send_keys(fill_value)
+            # Pause and continue
+            save_and_continue = self.driver.find_element_by_id("skip_add_family")
+            save_and_continue.click()
+            random_pause()
 
     def page_six(self):
         """
         Select the vaccine
         """
-        myElem = WebDriverWait(self.driver, self.delay)\
-            .until(EC.presence_of_element_located((By.CLASS_NAME, 'text-lg')))
-        html = self.driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        vaccines = soup.findAll("label", {"class": "text-lg"})
-        vaccine_button_connect = [(vaccine["for"], vaccine.text.lower()) for vaccine in vaccines]
-        if str(self.user_info["first_vaccine_brand"]) != "nan":
-            first_vaccine = self.user_info["first_vaccine_brand"]
-            button_ids = [but_id for but_id, vaccine in vaccine_button_connect
-                          if first_vaccine in vaccine]
-            if len(button_ids) == 1:
-                button_id = button_ids[0]
-            else:
-                raise SystemExit(
-                    f"Site did not have needed vaccine\nVaccines: {vaccine_button_connect}")
+        if "Clinic+does+not+have+any+appointment+slots+available" in self.driver.current_url:
+            self.appt_taken = True
         else:
-            button_id = vaccines[0]["for"]
-        vaccine_button = self.driver.find_element_by_id(button_id)
-        vaccine_button.click()
-        # Go to type in name field so that a signature is not needed
-        name_button = self.driver.find_element_by_xpath(
-            "//*[contains(text(), 'Type My Full Name')]")
-        name_button.click()
-        # Fill in the name
-        first_name_fill = self.driver.find_element_by_id("patient_signatory_first_name")
-        last_name_fill = self.driver.find_element_by_id("patient_signatory_last_name")
-        first_name_fill.send_keys(self.user_info["patient_first_name"])
-        last_name_fill.send_keys(self.user_info["patient_last_name"])
-        relationship_select = Select(self.driver.find_element_by_id(
-            "patient_relation_to_patient_for_insurance"))
-        # Fill in as self
-        relationship_select.select_by_visible_text("Self")
-        # Continue
-        save_and_continue = self.driver.find_element_by_id("submitButton")
-        save_and_continue.click()
-        random_pause()
-        # Continue on the next page
-        save_and_continue = self.driver.find_element_by_xpath(
-            "//*[contains(text(), 'Save And Continue')]")
-        save_and_continue.click()
-        random_pause()
+            myElem = WebDriverWait(self.driver, self.delay)\
+                .until(EC.presence_of_element_located((By.CLASS_NAME, 'text-lg')))
+            html = self.driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            vaccines = soup.findAll("label", {"class": "text-lg"})
+            vaccine_button_connect = [(vaccine["for"], vaccine.text.lower()) for vaccine in vaccines]
+            if str(self.user_info["first_vaccine_brand"]) != "nan":
+                first_vaccine = self.user_info["first_vaccine_brand"]
+                button_ids = [but_id for but_id, vaccine in vaccine_button_connect
+                              if first_vaccine in vaccine]
+                if len(button_ids) == 1:
+                    button_id = button_ids[0]
+                else:
+                    raise SystemExit(
+                        f"Site did not have needed vaccine\nVaccines: {vaccine_button_connect}")
+            else:
+                button_id = vaccines[0]["for"]
+            vaccine_button = self.driver.find_element_by_id(button_id)
+            vaccine_button.click()
+            # Go to type in name field so that a signature is not needed
+            name_button = self.driver.find_element_by_xpath(
+                "//*[contains(text(), 'Type My Full Name')]")
+            name_button.click()
+            # Fill in the name
+            first_name_fill = self.driver.find_element_by_id("patient_signatory_first_name")
+            last_name_fill = self.driver.find_element_by_id("patient_signatory_last_name")
+            first_name_fill.send_keys(self.user_info["patient_first_name"])
+            last_name_fill.send_keys(self.user_info["patient_last_name"])
+            relationship_select = Select(self.driver.find_element_by_id(
+                "patient_relation_to_patient_for_insurance"))
+            # Fill in as self
+            relationship_select.select_by_visible_text("Self")
+            # Continue
+            save_and_continue = self.driver.find_element_by_id("submitButton")
+            save_and_continue.click()
+            random_pause()
+            # Continue on the next page
+            save_and_continue = self.driver.find_element_by_xpath(
+                "//*[contains(text(), 'Save And Continue')]")
+            save_and_continue.click()
+            random_pause()
 
     def page_seven(self):
         myElem = WebDriverWait(self.driver, self.delay)\
@@ -338,31 +354,31 @@ def main():
         user_info["postal_code"] = f"0{user_info['postal_code']}"
     # Open a web browser
     driver = webdriver.Firefox()
-    # Open the webpage
-    driver.get(search_website)
     # Setup the class
     vaccine_page = vaccine_site(driver, user_info)
-    # Navigate page one and find all open appointments and select the day with the most
-    vaccine_page.page_start(sec_pause_refresh, search_website)
-    # Navigate the next page which has priority list
-    vaccine_page.page_one()
     # If the appt was taken before continuing to next page, go back to the start page
-    while not vaccine_page.continue_next:
-        vaccine_page.driver.get(search_website)
-        vaccine_page.driver.refresh()
-        vaccine_page.page_start(sec_pause_refresh)
+    appt_taken = True
+    while vaccine_page.appt_taken:
+        # Navigate page one and find all open appointments and select the day with the most
+        vaccine_page.page_start(sec_pause_refresh, search_website)
+        # Navigate the next page which has priority list
         vaccine_page.page_one()
-    # Fill in page 2
-    vaccine_page.page_two()
-    # Fill in page 3
-    vaccine_page.page_three()
-    # Fill in page 4 and 5
-    vaccine_page.page_four()
-    # Fill in page 6
-    vaccine_page.page_six()
-    if schedule:
-        # Schedule appointment
-        vaccine_page.page_seven()
+        if not vaccine_page.appt_taken:
+            # Fill in page 2
+            vaccine_page.page_two()
+        if not vaccine_page.appt_taken:
+            # Fill in page 3
+            vaccine_page.page_three()
+        if not vaccine_page.appt_taken:
+            # Fill in page 4 and 5
+            vaccine_page.page_four()
+        if not vaccine_page.appt_taken:
+            # Fill in page 6
+            vaccine_page.page_six()
+        if not vaccine_page.appt_taken:
+            if schedule:
+                # Schedule appointment
+                vaccine_page.page_seven()
 
 
 if __name__ == "__main__":
