@@ -1,13 +1,13 @@
 # vaccine_appt
-Last tested on 2021-02-19<br>
-Script that pings maimmunizations every 30 seconds to check for an vaccine opening.  It then fills in all of your info on the next 7 pages.  Takes a few seconds to find an opening, fill in your information, and schedule your appointment
+Last tested on 2021-02-21<br>
+Script that pings maimmunizations every 30 seconds to check for a vaccine opening.  It then fills in all of your info on the next 7 pages.  This script takes a few seconds to find an opening, fill in your information, and schedule your appointment
 
 ## Requirements
 
 <ul>
 <li>Selenium and geckodriver setup for firefox</li>
 <li>Python 3.6 or greater</li>
-<li>virtualenv install for regular python if not using Anaconda</li>
+<li>virtualenv installed for regular python if not using Anaconda</li>
 </ul>
 <br><br>
 
@@ -36,7 +36,7 @@ It is case and word sensitive.  Some values have the choices listed in the choic
 Within the main function<br>
 `data = read_csv(<vaccine_info.csv location>)`<br>
 `search_website` This is the website it is currently setup for.  Should work with all maimmunization
-searchs.  Just replace your search website within this variable.<br>
+searches.  Just replace your search website within this variable.<br>
 
 ## Run
 To have it stop at the last page and have you manually select the appointment<br>
