@@ -13,14 +13,15 @@ Script that pings maimmunizations every 30 seconds to check for a vaccine openin
 <br><br>
 
 ## Setup
-### Create a virtualenvironment and install dependencies:<br>
-for regular python<br>
+<li>Create a virtualenvironment and install dependencies
+<li>for regular python<br>
 ```
 $ python3 -m venv vaccine
 $ source vaccine/bin/acivate
 $ pip install -r requirements.txt --user
 ```
-<br>
+</li>
+<li>
 for anaconda<br>
 
 ```
@@ -28,10 +29,11 @@ $ conda create --name vaccine python=3.6
 $ conda activate vaccine
 $ conda install --file requirements.txt
 ```
-<br><br>
-### Fill in the csv file:<br>  
+</li></li>
+<li>Fill in the csv file
+<li>
 It is case and word sensitive.  Some values have the choices listed in the choice column of the csv.
-<br><br>
+</li></li>
 
 ## Variables that are possible to change
 Within the main function<br>
