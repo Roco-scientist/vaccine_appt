@@ -5,7 +5,7 @@ Script that pings maimmunizations every 30 seconds to check for a vaccine openin
 ## Requirements
 
 <ul>
-<li>Selenium and geckodriver setup for firefox</li>
+<li>Geckodriver setup for firefox <a href="https://github.com/mozilla/geckodriver/releases/tag/v0.29.0">Download Here</a></li>
 <li>Python 3.6 or greater</li>
 <li>virtualenv installed for regular python if not using Anaconda</li>
 </ul>
