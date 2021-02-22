@@ -6,7 +6,7 @@ patient_last_name,,Last Name,
 patient_race,I choose not to answer,,
 patient_ethnicity,I choose not to answer,,
 patient_date_of_birth_2i,,Birth Month,Full month name with capitol first letter
-patient_date_of_birth_3i,,Birth Day,2 digit number
+patient_date_of_birth_3i,,Birth Day,1 digit number for under 10
 patient_date_of_birth_1i,,Birth Year,4 digit year
 patient_sex,,Sex,Male/Female
 patient_email,,email,

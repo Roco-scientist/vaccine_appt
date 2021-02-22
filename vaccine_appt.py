@@ -142,15 +142,20 @@ class vaccine_site:
                                "patient_email", "patient_email_confirmation", "patient_phone_number",
                                "patient_address", "locality", "postal_code"):
                 fill_value = self.user_info[fill_field]
+                if str(fill_value) == 'nan':
+                    fill_value = ""
                 fill_web_loc = self.driver.find_element_by_id(fill_field)
-                fill_web_loc.send_keys(fill_value)
+                fill_web_loc.send_keys(str(fill_value))
             # Select the folowing fields with the user info
             for select_field in ("patient_race", "patient_ethnicity", "patient_date_of_birth_1i",
                                  "patient_date_of_birth_2i", "patient_date_of_birth_3i", "patient_sex",
                                  "patient_phone_number_type", "administrative_area_level_1"):
                 select_value = self.user_info[select_field]
                 select_web_loc = Select(self.driver.find_element_by_id(select_field))
-                select_web_loc.select_by_visible_text(select_value)
+                try:
+                    select_web_loc.select_by_visible_text(select_value)
+                except:
+                    raise SystemError(f"Could not find value: {select_value}")
             # Puase and continue
             save_and_continue =\
                 self.driver.find_element_by_id("submitButton")
@@ -279,7 +284,8 @@ class vaccine_site:
             html = self.driver.page_source
             soup = BeautifulSoup(html, "html.parser")
             vaccines = soup.findAll("label", {"class": "text-lg"})
-            vaccine_button_connect = [(vaccine["for"], vaccine.text.lower()) for vaccine in vaccines]
+            vaccine_button_connect = [(vaccine["for"], vaccine.text.lower())
+                                      for vaccine in vaccines]
             if str(self.user_info["first_vaccine_brand"]) != "nan":
                 first_vaccine = self.user_info["first_vaccine_brand"]
                 button_ids = [but_id for but_id, vaccine in vaccine_button_connect
