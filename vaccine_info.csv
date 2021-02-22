@@ -22,7 +22,7 @@ patient_member_id_for_insurance,,insurance ID#,
 patient_insured_first_name,,Policy Holders First Name,
 patient_insured_last_name,,Policy Holders Last name,
 patient_insured_date_of_birth_2i,,Policy Holders birth month,Full month name with capitol first letter
-patient_insured_date_of_birth_3i,,Policy Holders birth day,2 digit number
+patient_insured_date_of_birth_3i,,Policy Holders birth day,1 digit number if under 10
 patient_insured_date_of_birth_1i,,Policy Holders birth year,4 digit year
 patient_relation_to_patient_for_consent,,Policy holders relation to patient,Self/Spouse
 7,,Are you feeling sick today,yes/no
